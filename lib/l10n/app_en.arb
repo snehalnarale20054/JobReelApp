@@ -1,0 +1,33 @@
+{
+  "@@locale": "en",
+  "appName": "JobReels",
+  "@appName": { "description": "Application name" },
+
+  "tabReels": "Reels",
+  "@tabReels": { "description": "Bottom nav — Reels tab" },
+
+  "tabJobs": "Jobs",
+  "@tabJobs": { "description": "Bottom nav — Jobs tab" },
+
+  "tabPost": "Post",
+  "@tabPost": { "description": "Bottom nav — Post tab" },
+
+  "tabMessages": "Messages",
+  "@tabMessages": { "description": "Bottom nav — Messages tab" },
+
+  "tabProfile": "Profile",
+  "@tabProfile": { "description": "Bottom nav — Profile tab" },
+
+  "comingSoon": "Coming soon",
+  "@comingSoon": { "description": "Placeholder for empty screens" },
+
+  "debugLanguageLabel": "Language",
+  "@debugLanguageLabel": { "description": "Debug language switcher label" },
+
+  "langEnglish": "English",
+  "@langEnglish": {},
+  "langHindi": "हिन्दी",
+  "@langHindi": {},
+  "langMarathi": "मराठी",
+  "@langMarathi": {}
+}

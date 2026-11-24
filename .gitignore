@@ -1,0 +1,23 @@
+# Dart / Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+*.iml
+
+# Environment — NEVER commit real credentials
+.env
+
+# Android
+android/local.properties
+android/.gradle/
+android/app/google-services.json
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+
+# macOS
+.DS_Store

@@ -1,0 +1,155 @@
+import 'dart:typed_data';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
+import '../models/candidate_profile_model.dart';
+
+class ResumePdfBuilder {
+  static Future<Uint8List> buildPdf(CandidateProfileModel profile) async {
+    final doc = pw.Document();
+
+    final font = await PdfGoogleFonts.notoSansRegular();
+    final fontBold = await PdfGoogleFonts.notoSansBold();
+
+    pw.ImageProvider? avatarImage;
+    if (profile.photoUrl != null && profile.photoUrl!.isNotEmpty) {
+      try {
+        avatarImage = await networkImage(profile.photoUrl!);
+      } catch (_) {}
+    }
+
+    doc.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        margin: const pw.EdgeInsets.all(32),
+        theme: pw.ThemeData.withFont(base: font, bold: fontBold),
+        build: (pw.Context context) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              // Header
+              pw.Row(
+                crossAxisAlignment: pw.CrossAxisAlignment.center,
+                children: [
+                  if (avatarImage != null)
+                    pw.Container(
+                      width: 70,
+                      height: 70,
+                      margin: const pw.EdgeInsets.only(right: 16),
+                      decoration: pw.BoxDecoration(
+                        shape: pw.BoxShape.circle,
+                        image: pw.DecorationImage(image: avatarImage, fit: pw.BoxFit.cover),
+                      ),
+                    ),
+                  pw.Expanded(
+                    child: pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text(
+                          profile.fullName,
+                          style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold, color: PdfColors.blue900),
+                        ),
+                        pw.SizedBox(height: 4),
+                        pw.Text(
+                          profile.workCategory,
+                          style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold, color: PdfColors.orange800),
+                        ),
+                        pw.SizedBox(height: 4),
+                        pw.Text(
+                          'Location: ${profile.currentCity}  |  Preferred: ${profile.preferredCity ?? profile.currentCity}',
+                          style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey700),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              pw.SizedBox(height: 16),
+              pw.Divider(color: PdfColors.grey400, thickness: 1),
+              pw.SizedBox(height: 16),
+
+              // Summary
+              if (profile.about != null && profile.about!.isNotEmpty) ...[
+                _buildSectionHeader('PROFESSIONAL SUMMARY'),
+                pw.SizedBox(height: 6),
+                pw.Text(profile.about!, style: const pw.TextStyle(fontSize: 11, lineSpacing: 2)),
+                pw.SizedBox(height: 14),
+              ],
+
+              // Key Details Table
+              _buildSectionHeader('KEY DETAILS'),
+              pw.SizedBox(height: 8),
+              pw.Table(
+                columnWidths: {
+                  0: const pw.FlexColumnWidth(2),
+                  1: const pw.FlexColumnWidth(3),
+                },
+                children: [
+                  _buildTableRow('Experience:', profile.experienceYears),
+                  _buildTableRow('Education:', profile.education),
+                  _buildTableRow('Expected Salary:', profile.expectedSalary),
+                ],
+              ),
+              pw.SizedBox(height: 16),
+
+              // Skills
+              _buildSectionHeader('SKILLS & EXPERTISE'),
+              pw.SizedBox(height: 8),
+              pw.Wrap(
+                spacing: 8,
+                runSpacing: 6,
+                children: profile.skills.map((skill) {
+                  return pw.Container(
+                    padding: const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: pw.BoxDecoration(
+                      color: PdfColors.blue50,
+                      borderRadius: pw.BorderRadius.circular(12),
+                      border: pw.Border.all(color: PdfColors.blue200),
+                    ),
+                    child: pw.Text(skill, style: const pw.TextStyle(fontSize: 10, color: PdfColors.blue900)),
+                  );
+                }).toList(),
+              ),
+              pw.Spacer(),
+
+              // Footer
+              pw.Divider(color: PdfColors.grey300),
+              pw.SizedBox(height: 4),
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Text('Generated by JobReels Platform', style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey600)),
+                  pw.Text('100% Free Blue-Collar Career Platform', style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey600)),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
+    return doc.save();
+  }
+
+  static pw.Widget _buildSectionHeader(String title) {
+    return pw.Text(
+      title,
+      style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold, color: PdfColors.blue900),
+    );
+  }
+
+  static pw.TableRow _buildTableRow(String label, String value) {
+    return pw.TableRow(
+      children: [
+        pw.Padding(
+          padding: const pw.EdgeInsets.symmetric(vertical: 3),
+          child: pw.Text(label, style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold, color: PdfColors.grey800)),
+        ),
+        pw.Padding(
+          padding: const pw.EdgeInsets.symmetric(vertical: 3),
+          child: pw.Text(value, style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey900)),
+        ),
+      ],
+    );
+  }
+}

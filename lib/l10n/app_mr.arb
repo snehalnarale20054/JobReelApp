@@ -1,0 +1,18 @@
+{
+  "@@locale": "mr",
+  "appName": "JobReels",
+
+  "tabReels": "रील्स",
+  "tabJobs": "नोकऱ्या",
+  "tabPost": "पोस्ट",
+  "tabMessages": "संदेश",
+  "tabProfile": "प्रोफाइल",
+
+  "comingSoon": "लवकरच येत आहे",
+
+  "debugLanguageLabel": "भाषा",
+
+  "langEnglish": "English",
+  "langHindi": "हिन्दी",
+  "langMarathi": "मराठी"
+}
